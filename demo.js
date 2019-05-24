@@ -23,7 +23,7 @@ function getRandomStudent() {
     })
 }
 
-function getArrayStudents() {
+function getEmailArray() {
     let studentList = [];
     const studentCount = Math.random() * (30 - 1) + 1;
     for (let i = 0; i < studentCount; i++) {
@@ -32,16 +32,16 @@ function getArrayStudents() {
     return studentList
 }
 
-function getFullStudentList() {
+function getFullArrayList() {
     let fullStudentList = {};
     month.map(el => {
-        return fullStudentList[el] = getArrayStudents()
+        return fullStudentList[el] = getEmailArray()
     });
     return fullStudentList
 }
 
 
-console.log(getFullStudentList());
+console.log(getFullArrayList());
 
 
 
