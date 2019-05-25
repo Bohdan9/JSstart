@@ -1,7 +1,6 @@
-const month = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
-
-console.log(month[2])
+const month = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September',
+    'October', 'November', 'December'];
 
 function getRandomEmail() {
     const domain = '@email.com';
@@ -19,8 +18,13 @@ function getRandomStudent() {
     return ({
         id: getRandomID(0, 100),
         emailTo: getRandomEmail(),
-        emailFrom: getRandomEmail()
+        emailFrom: getRandomEmail(),
+        month: month[getRandomMonth()]
     })
+}
+
+function getRandomMonth() {
+    return Math.floor(Math.random() * month.length)
 }
 
 function getEmailArray() {
@@ -32,17 +36,38 @@ function getEmailArray() {
     return studentList
 }
 
-function getFullArrayList() {
-    let fullStudentList = {};
-    month.map(el => {
-        return fullStudentList[el] = getEmailArray()
-    });
-    return fullStudentList
+function getArrayByMonth() {
+
+    return getEmailArray().reduce(function (map, obj) {
+        obj.month = 'May';
+        map[obj.month] = getEmailArray().filter(a => a.month === obj.month);
+
+        return map;
+    }, {})
 }
 
+console.log(getArrayByMonth());
 
-console.log(getFullArrayList());
+let section = document.querySelector('section');
+for (let i = 0; i < getEmailArray().length; i++) {
+    let myArticle = document.createElement('article');
+    let myH2 = document.createElement('h2');
+    let myPara1 = document.createElement('p');
+    let myPara2 = document.createElement('p');
+    let myPara3 = document.createElement('p');
+    let myList = document.createElement('ul');
+
+    myH2.textContent = 'Id:' + getEmailArray()[i].id;
+    myPara1.textContent = 'Email From: ' + getEmailArray()[i].emailFrom;
+    myPara2.textContent = 'Email To: ' + getEmailArray()[i].emailTo;
+    myPara3.textContent = 'Month:' + getEmailArray()[i].month;
 
 
+    myArticle.appendChild(myH2);
+    myArticle.appendChild(myPara1);
+    myArticle.appendChild(myPara2);
+    myArticle.appendChild(myPara3);
+    myArticle.appendChild(myList);
 
-
+    section.appendChild(myArticle);
+}
