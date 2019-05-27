@@ -23,10 +23,6 @@ function getRandomStudent() {
     })
 }
 
-function getCurrentMonth() {
-    return month[4]
-
-}
 
 function getRandomMonth() {
     return Math.floor(Math.random() * month.length)
@@ -44,7 +40,6 @@ function getEmailArray() {
 function getArrayByMonth() {
 
     return getEmailArray().reduce(function (map, obj) {
-        obj.month =getCurrentMonth()
         if (!map.hasOwnProperty(obj.month)) {
             map[obj.month] = []
         }
@@ -52,7 +47,43 @@ function getArrayByMonth() {
         return map;
     }, {})
 }
-console.log(getArrayByMonth());
+let monthSelector = 0;
+
+function getCurrentMonth() {
+     let  currentMonth = month[monthSelector];
+     let objectArray = getArrayByMonth();
+     let data = objectArray[currentMonth];
+     return {[currentMonth]: data };
+}
+
+function getNextMonth() {
+    monthSelector++;
+    let nextMonth = month[monthSelector];
+    let objectArray = getArrayByMonth();
+    let data = objectArray[nextMonth];
+    return {[nextMonth]: data };
+}
+
+function getPreviousMonth() {
+    monthSelector --;
+    let previous = month[monthSelector];
+    let objectArray = getArrayByMonth();
+    let data = objectArray[previous];
+    return {[previous]: data};
+
+
+}
+
+console.log(getCurrentMonth(),'current');
+console.log(getNextMonth(),'next');
+console.log(getNextMonth(),'next');
+console.log(getNextMonth(),'next');
+console.log(getPreviousMonth(),'previous');
+console.log(getNextMonth(),'next');
+
+
+
+
 
 /*
 let section = document.querySelector('section');
