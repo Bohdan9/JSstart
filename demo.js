@@ -48,10 +48,10 @@ function getArrayByMonth() {
     }, {})
 }
 let monthSelector = 0;
+let objectArray = getArrayByMonth();
 
 function getCurrentMonth() {
      let  currentMonth = month[monthSelector];
-     let objectArray = getArrayByMonth();
      let data = objectArray[currentMonth];
      return {[currentMonth]: data };
 }
