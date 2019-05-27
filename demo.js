@@ -58,11 +58,19 @@ function getCurrentMonth() {
 
 function getNextMonth() {
     monthSelector++;
+    if (monthSelector > month.length -1){
+        monthSelector = 0;
+        return getCurrentMonth();
+    }
   return getCurrentMonth();
 }
 
 function getPreviousMonth() {
     monthSelector --;
+    if (monthSelector < 0){
+        monthSelector = month.length -1;
+        return getCurrentMonth()
+    }
     return getCurrentMonth();
 }
 
@@ -70,7 +78,24 @@ console.log(getCurrentMonth(),'current');
 console.log(getNextMonth(),'next');
 console.log(getNextMonth(),'next');
 console.log(getNextMonth(),'next');
+console.log(getNextMonth(),'next');
+console.log(getNextMonth(),'next');
+console.log(getNextMonth(),'next');
+console.log(getNextMonth(),'next');
+console.log(getNextMonth(),'next');
+console.log(getNextMonth(),'next');
+console.log(getNextMonth(),'next');
+console.log(getNextMonth(),'next');
+console.log(getNextMonth(),'next');
+console.log(getNextMonth(),'next');
 console.log(getPreviousMonth(),'previous');
+console.log(getPreviousMonth(),'previous');
+console.log(getPreviousMonth(),'previous');
+console.log(getPreviousMonth(),'previous');
+console.log(getNextMonth(),'next');
+console.log(getNextMonth(),'next');
+
+
 
 
 
