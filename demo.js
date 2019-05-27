@@ -58,20 +58,12 @@ function getCurrentMonth() {
 
 function getNextMonth() {
     monthSelector++;
-    let nextMonth = month[monthSelector];
-    let objectArray = getArrayByMonth();
-    let data = objectArray[nextMonth];
-    return {[nextMonth]: data };
+  return getCurrentMonth();
 }
 
 function getPreviousMonth() {
     monthSelector --;
-    let previous = month[monthSelector];
-    let objectArray = getArrayByMonth();
-    let data = objectArray[previous];
-    return {[previous]: data};
-
-
+    return getCurrentMonth();
 }
 
 console.log(getCurrentMonth(),'current');
@@ -79,7 +71,7 @@ console.log(getNextMonth(),'next');
 console.log(getNextMonth(),'next');
 console.log(getNextMonth(),'next');
 console.log(getPreviousMonth(),'previous');
-console.log(getNextMonth(),'next');
+
 
 
 
