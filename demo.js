@@ -23,6 +23,11 @@ function getRandomStudent() {
     })
 }
 
+function getCurrentMonth() {
+    return month[4]
+
+}
+
 function getRandomMonth() {
     return Math.floor(Math.random() * month.length)
 }
@@ -39,15 +44,17 @@ function getEmailArray() {
 function getArrayByMonth() {
 
     return getEmailArray().reduce(function (map, obj) {
-        obj.month = 'May';
-        map[obj.month] = getEmailArray().filter(a => a.month === obj.month);
-
+        obj.month =getCurrentMonth()
+        if (!map.hasOwnProperty(obj.month)) {
+            map[obj.month] = []
+        }
+        map[obj.month].push(obj);
         return map;
     }, {})
 }
-
 console.log(getArrayByMonth());
 
+/*
 let section = document.querySelector('section');
 for (let i = 0; i < getEmailArray().length; i++) {
     let myArticle = document.createElement('article');
@@ -62,7 +69,6 @@ for (let i = 0; i < getEmailArray().length; i++) {
     myPara2.textContent = 'Email To: ' + getEmailArray()[i].emailTo;
     myPara3.textContent = 'Month:' + getEmailArray()[i].month;
 
-
     myArticle.appendChild(myH2);
     myArticle.appendChild(myPara1);
     myArticle.appendChild(myPara2);
@@ -70,4 +76,4 @@ for (let i = 0; i < getEmailArray().length; i++) {
     myArticle.appendChild(myList);
 
     section.appendChild(myArticle);
-}
+}*/
