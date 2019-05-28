@@ -1,3 +1,5 @@
+let monthSelector = 0;
+let objectArray = getArrayByMonth();
 
 const month = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September',
     'October', 'November', 'December'];
@@ -47,8 +49,6 @@ function getArrayByMonth() {
         return map;
     }, {})
 }
-let monthSelector = 0;
-let objectArray = getArrayByMonth();
 
 function getCurrentMonth() {
      let  currentMonth = month[monthSelector];
