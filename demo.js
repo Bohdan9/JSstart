@@ -1,8 +1,5 @@
 let monthSelector = 0;
-let objectArray = getArrayByMonth();
-
-const month = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September',
-    'October', 'November', 'December'];
+let objectArray = getArrayByMonthAndYear();
 
 function getRandomEmail() {
     const domain = '@email.com';
@@ -16,18 +13,27 @@ function getRandomID(min, max) {
     return randomId;
 }
 
+function generateRandomDate(start, end) {
+    let round = start + Math.random() * (end - start);
+    round = Math.round(round);
+    return round
+}
+
+function generateDate() {
+    let generateYear = generateRandomDate(2017, 2019);
+    let generateMonth = generateRandomDate(1, 12);
+    let generateDay = generateRandomDate(1, 31);
+
+    return (generateYear + "." + generateMonth + "." + generateDay).toString();
+}
+
 function getRandomStudent() {
     return ({
         id: getRandomID(0, 100),
         emailTo: getRandomEmail(),
         emailFrom: getRandomEmail(),
-        month: month[getRandomMonth()]
+        date: generateDate()
     })
-}
-
-
-function getRandomMonth() {
-    return Math.floor(Math.random() * month.length)
 }
 
 function getEmailArray() {
@@ -36,45 +42,49 @@ function getEmailArray() {
     for (let i = 0; i < studentCount; i++) {
         studentList.push(getRandomStudent())
     }
+
     return studentList
 }
 
-function getArrayByMonth() {
-
+function getArrayByMonthAndYear() {
     return getEmailArray().reduce(function (map, obj) {
-        if (!map.hasOwnProperty(obj.month)) {
-            map[obj.month] = []
+        let slicingDate = obj.date.slice(0, 7);
+        if (!map.hasOwnProperty(slicingDate)) {
+            map[slicingDate] = []
         }
-        map[obj.month].push(obj);
+        map[slicingDate].push(obj);
+
         return map;
     }, {})
 }
 
-function getCurrentMonth() {
-     let  currentMonth = month[monthSelector];
-     let data = objectArray[currentMonth];
-     return {[currentMonth]: data };
+function getCurrentMonthAndYear() {
+    let monthAndYear = Object.keys(getArrayByMonthAndYear());
+    let currentMonth = monthAndYear[monthSelector];
+    let data = objectArray[currentMonth];
+    return {[currentMonth]: data};
 }
+console.log(getCurrentMonthAndYear());
 
-function getNextMonth() {
+/*function getNextMonth() {
     monthSelector++;
-    if (monthSelector > month.length -1){
-        monthSelector = 0;
-        return getCurrentMonth();
-    }
-  return getCurrentMonth();
-}
-
-function getPreviousMonth() {
-    monthSelector --;
-    if (monthSelector < 0){
-        monthSelector = month.length -1;
-        return getCurrentMonth()
+    if (monthSelector > month.length - 1) {
+        monthSelector = 0
     }
     return getCurrentMonth();
 }
 
-console.log(getCurrentMonth(),'current');
+function getPreviousMonth() {
+    monthSelector--;
+    if (monthSelector < 0) {
+        monthSelector = month.length - 1;
+    }
+    return getCurrentMonth();
+}*/
+
+
+
+/*console.log(getCurrentMonth(),'current');
 console.log(getNextMonth(),'next');
 console.log(getNextMonth(),'next');
 console.log(getNextMonth(),'next');
@@ -93,13 +103,12 @@ console.log(getPreviousMonth(),'previous');
 console.log(getPreviousMonth(),'previous');
 console.log(getPreviousMonth(),'previous');
 console.log(getNextMonth(),'next');
-console.log(getNextMonth(),'next');
+console.log(getNextMonth(),'next');*/
 
 
-
-
-
-
+/*function getRandomMonth() {
+    return Math.floor(Math.random() * month.length)
+}*/
 
 
 /*
