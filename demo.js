@@ -24,7 +24,7 @@ function generateDate() {
     let generateMonth = generateRandomDate(1, 12);
     let generateDay = generateRandomDate(1, 31);
 
-    return (generateYear + "." + generateMonth + "." + generateDay).toString();
+    return (generateDay + "." + generateMonth + "." + generateYear).toString();
 }
 
 function getRandomStudent() {
@@ -38,6 +38,7 @@ function getRandomStudent() {
 
 function getEmailArray() {
     let studentList = [];
+
     const studentCount = Math.random() * (30 - 1) + 1;
     for (let i = 0; i < studentCount; i++) {
         studentList.push(getRandomStudent())
@@ -48,43 +49,83 @@ function getEmailArray() {
 
 function getArrayByMonthAndYear() {
     return getEmailArray().reduce(function (map, obj) {
-        let slicingDate = obj.date.slice(0, 7);
-        if (!map.hasOwnProperty(slicingDate)) {
-            map[slicingDate] = []
+        let slicingDate = obj.date.split('.');
+        slicingDate.shift();
+        let joinArr = slicingDate.join(':');
+        if (!map.hasOwnProperty(joinArr)) {
+            map[joinArr] = []
         }
-        map[slicingDate].push(obj);
-
+        map[joinArr].push(obj);
         return map;
     }, {})
 }
 
+//console.log(objectArray);
+
+
+function getKeyFromMap() {
+    let keyArray = [];
+    for (let [key] of Object.entries(objectArray)) {
+        keyArray.push(key)
+    }
+    return keyArray
+}
+
+
+
+function sortByYear() {
+    let arrKey = getKeyFromMap();
+    console.log(getKeyFromMap(),'get dates')
+    const sorter = data =>
+        data
+            .map(item => item.split(":"))
+            .sort((a, b) => a[1] - b[1])
+            .map(item => item.join(":"))
+            .map(item => item.split(":"))
+            .sort((a, b) => a[0] - b[0])
+            .map(item => item.join(":"));
+    return sorter(arrKey)
+
+}
+
+
+
+console.log(sortByYear(), 'sorted key')
+
+
 function getCurrentMonthAndYear() {
-    let monthAndYear = Object.keys(getArrayByMonthAndYear());
-    let currentMonth = monthAndYear[monthSelector];
+    let arrayOfKeys = sortByYear();
+    let currentMonth = arrayOfKeys[monthSelector];
     let data = objectArray[currentMonth];
     return {[currentMonth]: data};
 }
-console.log(getCurrentMonthAndYear());
 
-/*function getNextMonth() {
+
+console.log(getCurrentMonthAndYear(),'current')
+//console.log(getCurrentMonthAndYear(),'month');
+//console.log(getArrayByMonthAndYear(),'arrr');
+
+function getNextMonth() {
     monthSelector++;
-    if (monthSelector > month.length - 1) {
+    if (monthSelector > objectArray.length) {
         monthSelector = 0
     }
-    return getCurrentMonth();
+    return getCurrentMonthAndYear();
 }
+console.log(getNextMonth())
 
 function getPreviousMonth() {
     monthSelector--;
     if (monthSelector < 0) {
-        monthSelector = month.length - 1;
+        monthSelector = objectArray.length - 1;
     }
-    return getCurrentMonth();
-}*/
+    return getCurrentMonthAndYear();
+}
 
 
 
-/*console.log(getCurrentMonth(),'current');
+/*
+console.log(getCurrentMonthAndYear(),'current');
 console.log(getNextMonth(),'next');
 console.log(getNextMonth(),'next');
 console.log(getNextMonth(),'next');
@@ -103,7 +144,8 @@ console.log(getPreviousMonth(),'previous');
 console.log(getPreviousMonth(),'previous');
 console.log(getPreviousMonth(),'previous');
 console.log(getNextMonth(),'next');
-console.log(getNextMonth(),'next');*/
+console.log(getNextMonth(),'next');
+*/
 
 
 /*function getRandomMonth() {
