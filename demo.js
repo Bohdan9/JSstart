@@ -1,5 +1,6 @@
-let monthSelector = 0;
-let objectArray = getArrayByMonthAndYear();
+let selectMonth = 0;
+let usersObject = getArrayByMonthAndYear();
+usersObject.sortedKeys = sortByYearAndMonth(usersObject.keySet);
 
 function getRandomEmail() {
     const domain = '@email.com';
@@ -37,142 +38,86 @@ function getRandomStudent() {
 }
 
 function getEmailArray() {
-    let studentList = [];
-
+    let emailList = [];
     const studentCount = Math.random() * (30 - 1) + 1;
     for (let i = 0; i < studentCount; i++) {
-        studentList.push(getRandomStudent())
+        emailList.push(getRandomStudent())
     }
-
-    return studentList
+    return emailList
 }
 
 function getArrayByMonthAndYear() {
-    return getEmailArray().reduce(function (map, obj) {
-        let slicingDate = obj.date.split('.');
-        slicingDate.shift();
-        let joinArr = slicingDate.join(':');
-        if (!map.hasOwnProperty(joinArr)) {
-            map[joinArr] = []
+    return getEmailArray().reduce(function(acc, obj) {
+        const [day, month,year] = obj.date.split('.');
+        let key = `${month}.${year}`;
+        if (!acc.map.hasOwnProperty(key)) {
+            acc.map[key] = [];
         }
-        map[joinArr].push(obj);
-        return map;
-    }, {})
+        acc.keySet.add(key);
+        acc.map[key].push(obj);
+        return acc;
+    }, { keySet: new Set(), map: {} })
 }
 
-//console.log(objectArray);
-
-
-function getKeyFromMap() {
-    let keyArray = [];
-    for (let [key] of Object.entries(objectArray)) {
-        keyArray.push(key)
-    }
-    return keyArray
+function sortByYearAndMonth(valuesToSort) {
+    return Array.from(valuesToSort)
+        .map(item => item.split("."))
+        .sort(( a, b) => (Number(a[0]))  - Number((b[0])))
+        .sort((a, b) =>  Number((a[1])) - Number((b[1])))
+        .map(item => item.join("."));
 }
 
+function getObjectByCurrentMonthAndYear() {
+    let currentMonth = usersObject.sortedKeys[selectMonth];
+    let data = usersObject.map[currentMonth];
 
-
-function sortByYear() {
-    let arrKey = getKeyFromMap();
-    console.log(getKeyFromMap(),'get dates')
-    const sorter = data =>
-        data
-            .map(item => item.split(":"))
-            .sort((a, b) => a[1] - b[1])
-            .map(item => item.join(":"))
-            .map(item => item.split(":"))
-            .sort((a, b) => a[0] - b[0])
-            .map(item => item.join(":"));
-    return sorter(arrKey)
-
-}
-
-
-
-console.log(sortByYear(), 'sorted key')
-
-
-function getCurrentMonthAndYear() {
-    let arrayOfKeys = sortByYear();
-    let currentMonth = arrayOfKeys[monthSelector];
-    let data = objectArray[currentMonth];
     return {[currentMonth]: data};
 }
+console.log(getObjectByCurrentMonthAndYear());
 
-
-console.log(getCurrentMonthAndYear(),'current')
-//console.log(getCurrentMonthAndYear(),'month');
-//console.log(getArrayByMonthAndYear(),'arrr');
 
 function getNextMonth() {
-    monthSelector++;
-    if (monthSelector > objectArray.length) {
-        monthSelector = 0
+
+    if ((selectMonth >= 0) && (selectMonth < usersObject.sortedKeys.length) ||(selectMonth<0)){
+        selectMonth++;
+        return getObjectByCurrentMonthAndYear()
     }
-    return getCurrentMonthAndYear();
+
+    else {
+        return"Haven't users yet"
+    }
 }
-console.log(getNextMonth())
 
 function getPreviousMonth() {
-    monthSelector--;
-    if (monthSelector < 0) {
-        monthSelector = objectArray.length - 1;
+    if (selectMonth >= 0){
+        selectMonth--;
+        return getObjectByCurrentMonthAndYear()
     }
-    return getCurrentMonthAndYear();
+    else {
+        return"Haven't users yet"
+    }
+}
+console.log(sortByYearAndMonth(usersObject.keySet));
+console.log(getObjectByCurrentMonthAndYear(),'current')
+console.log(getNextMonth(),"next");
+console.log(getNextMonth());
+console.log(getNextMonth());
+console.log(getNextMonth());
+console.log(getNextMonth());
+console.log(getNextMonth());
+console.log(getNextMonth());
+console.log(getNextMonth());
+console.log(getPreviousMonth(),'prev');
+console.log(getPreviousMonth(),'prev');
+console.log(getPreviousMonth(),'prev');
+
+
+document.getElementById("object").innerHTML = JSON.stringify(getObjectByCurrentMonthAndYear(), null, ' ');
+
+function rightClick() {
+    document.getElementById("object").innerHTML = JSON.stringify(getNextMonth(), null, ' ');
 }
 
-
-
-/*
-console.log(getCurrentMonthAndYear(),'current');
-console.log(getNextMonth(),'next');
-console.log(getNextMonth(),'next');
-console.log(getNextMonth(),'next');
-console.log(getNextMonth(),'next');
-console.log(getNextMonth(),'next');
-console.log(getNextMonth(),'next');
-console.log(getNextMonth(),'next');
-console.log(getNextMonth(),'next');
-console.log(getNextMonth(),'next');
-console.log(getNextMonth(),'next');
-console.log(getNextMonth(),'next');
-console.log(getNextMonth(),'next');
-console.log(getNextMonth(),'next');
-console.log(getPreviousMonth(),'previous');
-console.log(getPreviousMonth(),'previous');
-console.log(getPreviousMonth(),'previous');
-console.log(getPreviousMonth(),'previous');
-console.log(getNextMonth(),'next');
-console.log(getNextMonth(),'next');
-*/
-
-
-/*function getRandomMonth() {
-    return Math.floor(Math.random() * month.length)
-}*/
-
-
-/*
-let section = document.querySelector('section');
-for (let i = 0; i < getEmailArray().length; i++) {
-    let myArticle = document.createElement('article');
-    let myH2 = document.createElement('h2');
-    let myPara1 = document.createElement('p');
-    let myPara2 = document.createElement('p');
-    let myPara3 = document.createElement('p');
-    let myList = document.createElement('ul');
-
-    myH2.textContent = 'Id:' + getEmailArray()[i].id;
-    myPara1.textContent = 'Email From: ' + getEmailArray()[i].emailFrom;
-    myPara2.textContent = 'Email To: ' + getEmailArray()[i].emailTo;
-    myPara3.textContent = 'Month:' + getEmailArray()[i].month;
-
-    myArticle.appendChild(myH2);
-    myArticle.appendChild(myPara1);
-    myArticle.appendChild(myPara2);
-    myArticle.appendChild(myPara3);
-    myArticle.appendChild(myList);
-
-    section.appendChild(myArticle);
-}*/
+function leftClick() {
+    document.getElementById("object").innerHTML = JSON.stringify(getPreviousMonth(), null, ' ');
+}
