@@ -30,6 +30,7 @@ function getRandomMail() {
         date: generateDate()
     })
 }
+
 function getRandomID(min, max) {
     let randomId = Math.random() * (max - min) + min;
     randomId = Math.round(randomId);
@@ -45,55 +46,56 @@ function getEmailArray() {
     return emailList
 }
 
-let result = sortedFetchData();
+let promiseObj = new Promise(function (res) {
+    setTimeout(function () {
+        res(getEmailArray());
+    }, 1000);
+});
 
-
- function fetchData() {
-    let emailArray = getEmailArray();
-    const getFormattedArr = (emArr) => {
-        return emArr.reduce(function (acc, obj) {
+function fetchData() {
+     return promiseObj.then(function (value) {
+        return value.reduce(function (acc, obj) {
             const [, month, year] = obj.date.split('.');
             let key = `${month}.${year}`;
-            if (!acc.newMap.hasOwnProperty(key)) {
-                acc.newMap[key] = [];
+            if (!acc.map.hasOwnProperty(key)) {
+                acc.map[key] = [];
             }
             acc.keySet.add(key);
-            acc.newMap[key].push(obj);
+            acc.map[key].push(obj);
             return acc;
-        }, {keySet: new Set(), newMap: {}});
-    };
-
-    return new Promise((resolve => setTimeout(() => resolve(getFormattedArr(emailArray)), 3000)));
-
- }
-function getMapFromFetchData() {
-    fetchData().then(function (res) {
-        const {newMap} = res;
-        return newMap;
+        }, {keySet: new Set(), map: {}})
     });
 }
 
-function sortedFetchData() {
+function getSortedKeys() {
     fetchData().then(function (res) {
+        console.log(res);
         const {keySet} = res;
-        return result = sortByYearAndMonth(Array.from(keySet))
-    });
+        return sortByYearAndMonth(Array.from(keySet))
+    }).then(console.log);
 }
 
 function sortByYearAndMonth(valuesToSort) {
     return (valuesToSort)
         .map(item => item.split("."))
-        .sort(( a, b) => ((Number(a[0]))  + Number((b[0]))) - (Number(a[1]) + Number(b[1])))
+        .sort((a, b) => (Number(a[0])) - Number((b[0])))
+        .sort((a, b) => Number((a[1])) - Number((b[1])))
         .map(item => item.join("."));
 }
+var map, keySet;
+fetchData().then(res => {
+    map = res.map;
+    keySet = res.keySet;
+}).then(() => getObjectByCurrentMonthAndYear(keySet, 0, map)).then(console.log)
+var sortedKeys = getSortedKeys;
 
-/*function getObjectByCurrentMonthAndYear() {
-
-    let currentMonth = sortedFetchData()[selectMonth];
-    let data = getMapFromFetchData()[currentMonth];
+// let res = getSortedKeys();
+function getObjectByCurrentMonthAndYear(keys,selectMonth, map) {
+    let currentMonth = keySet[selectMonth];
+    let data = map[currentMonth];
+    console.log(currentMonth, 'currentMonth', data, 'data', map, 'map', keys, 'keys')
     return {[currentMonth]: data};
-}*/
-
+}
 
 
 
