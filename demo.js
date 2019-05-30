@@ -48,7 +48,7 @@ function getEmailArray() {
 
 function getArrayByMonthAndYear() {
     return getEmailArray().reduce(function(acc, obj) {
-        const [day, month,year] = obj.date.split('.');
+        const [, month,year] = obj.date.split('.');
         let key = `${month}.${year}`;
         if (!acc.map.hasOwnProperty(key)) {
             acc.map[key] = [];
@@ -62,8 +62,7 @@ function getArrayByMonthAndYear() {
 function sortByYearAndMonth(valuesToSort) {
     return Array.from(valuesToSort)
         .map(item => item.split("."))
-        .sort(( a, b) => (Number(a[0]))  - Number((b[0])))
-        .sort((a, b) =>  Number((a[1])) - Number((b[1])))
+        .sort(( a, b) => ((Number(a[0]))  + Number((b[0]))) - (Number(a[1]) + Number(b[1])))
         .map(item => item.join("."));
 }
 
@@ -78,7 +77,7 @@ console.log(getObjectByCurrentMonthAndYear());
 
 function getNextMonth() {
 
-    if ((selectMonth >= 0) && (selectMonth < usersObject.sortedKeys.length) ||(selectMonth<0)){
+    if (selectMonth < usersObject.sortedKeys.length -1  ){
         selectMonth++;
         return getObjectByCurrentMonthAndYear()
     }
@@ -89,7 +88,7 @@ function getNextMonth() {
 }
 
 function getPreviousMonth() {
-    if (selectMonth >= 0){
+    if (selectMonth > 0) {
         selectMonth--;
         return getObjectByCurrentMonthAndYear()
     }
