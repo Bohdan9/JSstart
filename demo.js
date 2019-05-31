@@ -1,7 +1,8 @@
-let selectMonth = 0;
-let emailsMap = null;
-let sortedMapKeys = null;
-
+let additionalObject = ({
+    selectMonth: selectMonth = 0,
+    emailsMap: emailsMap = null,
+    sortedMapKeys: sortedMapKeys = null
+});
 
 function getRandomEmail() {
     const domain = '@email.com';
@@ -50,68 +51,71 @@ function getEmailArray() {
 let promiseObj = new Promise(function (res) {
     setTimeout(function () {
         res(getEmailArray());
-    }, 1000);
+    }, 3000);
 });
 
 function fetchData() {
-    return promiseObj.then(function (value) {
-        return value.reduce(function (acc, obj) {
-            const [, month, year] = obj.date.split('.');
-            let key = `${month}.${year}`;
-            if (!acc.myMap.hasOwnProperty(key)) {
-                acc.myMap[key] = [];
-            }
-            acc.keySet.add(key);
-            acc.myMap[key].push(obj);
-            return acc;
-        }, {keySet: new Set(), myMap: {}})
-    });
-}
-
-function sortByYearAndMonth(valuesToSort) {
-    return (Array.from(valuesToSort))
-        .map(item => item.split("."))
-        .sort((a, b) => (Number(a[0])) - Number((b[0])))
-        .sort((a, b) => Number((a[1])) - Number((b[1])))
-        .map(item => item.join("."));
+    return promiseObj;
 }
 
 function saveData(data) {
-    emailsMap = data.myMap;
-    sortedMapKeys = sortByYearAndMonth(data.keySet);
+    const processedData = data.reduce(function (acc, obj) {
+        const [, month, year] = obj.date.split('.');
+        let key = `${month}.${year}`;
+        if (!acc.myMap.hasOwnProperty(key)) {
+            acc.myMap[key] = [];
+        }
+        acc.keySet.add(key);
+        acc.myMap[key].push(obj);
+        return acc;
+    }, {keySet: new Set(), myMap: {}});
+
+    additionalObject.emailsMap = processedData.myMap;
+    additionalObject.sortedMapKeys = sortByYearAndMonth(processedData.keySet);
 }
 
+fetchData().then(saveData).then(getObjectByCurrentMonthAndYear);
+
+function sortByYearAndMonth(valuesToSort) {
+    return Array.from(valuesToSort)
+        .map(item => item.split("."))
+        .sort(( a, b) => ((Number(a[0]))  + Number((b[0]))) - (Number(a[1]) + Number(b[1])))
+        .map(item => item.join("."));
+}
+
+
 function getObjectByCurrentMonthAndYear() {
-    let currentMonth = sortedMapKeys[selectMonth];
-    let data = emailsMap[currentMonth];
-    console.log(sortedMapKeys,'sorted')
+    let currentMonth = additionalObject.sortedMapKeys[additionalObject.selectMonth];
+    let data = additionalObject.emailsMap[currentMonth];
     return {[currentMonth]: data};
 }
 
-function getObjectFromNextMonth(){
-    if (selectMonth <= sortedMapKeys.length -1) {
-        selectMonth++;
+function getObjectFromNextMonth() {
+    if (additionalObject.selectMonth < additionalObject.sortedMapKeys.length - 1) {
+        additionalObject.selectMonth++;
     }
     return getObjectByCurrentMonthAndYear()
 }
 
-function getObjectFromPreviousMonth(){
-    if (selectMonth>0){
-        selectMonth--;
+function getObjectFromPreviousMonth() {
+    if (additionalObject.selectMonth > 0) {
+        additionalObject.selectMonth--;
     }
     return getObjectByCurrentMonthAndYear()
 }
 
-fetchData().then(saveData).then(getObjectByCurrentMonthAndYear).then(console.log);
-fetchData().then(saveData).then(getObjectFromNextMonth).then(console.log);
-fetchData().then(saveData).then(getObjectFromNextMonth).then(console.log);
-fetchData().then(saveData).then(getObjectFromNextMonth).then(console.log);
-fetchData().then(saveData).then(getObjectFromNextMonth).then(console.log);
-fetchData().then(saveData).then(getObjectFromNextMonth).then(console.log);
-fetchData().then(saveData).then(getObjectFromNextMonth).then(console.log);
-fetchData().then(saveData).then(getObjectFromNextMonth).then(console.log);
-fetchData().then(saveData).then(getObjectFromNextMonth).then(console.log);
-fetchData().then(saveData).then(getObjectFromNextMonth).then(console.log);
-fetchData().then(saveData).then(getObjectFromNextMonth).then(console.log);
-fetchData().then(saveData).then(getObjectFromPreviousMonth).then(console.log);
-fetchData().then(saveData).then(getObjectFromPreviousMonth).then(console.log);
+function rightClick() {
+    console.log('rightClick');
+    if (!additionalObject.emailsMap) return document.getElementById("object").innerHTML = JSON.stringify('Wait...', null, ' ');
+    const json = getObjectFromNextMonth();
+    document.getElementById("object").innerHTML = JSON.stringify(json, null, ' ');
+
+}
+
+function leftClick() {
+    console.log('leftClick');
+    if (!additionalObject.emailsMap) return;
+    const json = getObjectFromPreviousMonth();
+    document.getElementById("object").innerHTML = JSON.stringify(json, null, ' ');
+}
+
