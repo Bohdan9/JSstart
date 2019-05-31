@@ -44,8 +44,7 @@ function getEmailArray() {
     for (let i = 0; i < studentCount; i++) {
         emailList.push(getRandomMail())
     }
-
-    return emailList
+    return emailList;
 }
 
 let promiseObj = new Promise(function (res) {
@@ -55,22 +54,22 @@ let promiseObj = new Promise(function (res) {
 });
 
 function fetchData() {
-    return this.promiseObj.then(function (value) {
+    return promiseObj.then(function (value) {
         return value.reduce(function (acc, obj) {
             const [, month, year] = obj.date.split('.');
             let key = `${month}.${year}`;
-            if (!acc.map.hasOwnProperty(key)) {
-                acc.map[key] = [];
+            if (!acc.myMap.hasOwnProperty(key)) {
+                acc.myMap[key] = [];
             }
             acc.keySet.add(key);
-            acc.map[key].push(obj);
+            acc.myMap[key].push(obj);
             return acc;
-        }, {keySet: new Set(), map: {}})
+        }, {keySet: new Set(), myMap: {}})
     });
 }
 
 function sortByYearAndMonth(valuesToSort) {
-    return Array.from(valuesToSort)
+    return (Array.from(valuesToSort))
         .map(item => item.split("."))
         .sort((a, b) => (Number(a[0])) - Number((b[0])))
         .sort((a, b) => Number((a[1])) - Number((b[1])))
@@ -78,19 +77,41 @@ function sortByYearAndMonth(valuesToSort) {
 }
 
 function saveData(data) {
-    this.emailsMap = data.map;
-   // console.log(data)
-    console.log(this.selectMonth)
-    this.sortedMapKeys = this.sortByYearAndMonth(data.keySet);
+    emailsMap = data.myMap;
+    sortedMapKeys = sortByYearAndMonth(data.keySet);
 }
 
 function getObjectByCurrentMonthAndYear() {
-    let currentMonth = this.sortedMapKeys[selectMonth];
-    let data = this.emailsMap[currentMonth];
+    let currentMonth = sortedMapKeys[selectMonth];
+    let data = emailsMap[currentMonth];
+    console.log(sortedMapKeys,'sorted')
     return {[currentMonth]: data};
 }
 
-/*function getNextMonthAndYear(){
-    selectMonth++;
-}*/
-fetchData().then(this.saveData.bind(this)).then(this.getObjectByCurrentMonthAndYear);
+function getObjectFromNextMonth(){
+    if (selectMonth <= sortedMapKeys.length -1) {
+        selectMonth++;
+    }
+    return getObjectByCurrentMonthAndYear()
+}
+
+function getObjectFromPreviousMonth(){
+    if (selectMonth>0){
+        selectMonth--;
+    }
+    return getObjectByCurrentMonthAndYear()
+}
+
+fetchData().then(saveData).then(getObjectByCurrentMonthAndYear).then(console.log);
+fetchData().then(saveData).then(getObjectFromNextMonth).then(console.log);
+fetchData().then(saveData).then(getObjectFromNextMonth).then(console.log);
+fetchData().then(saveData).then(getObjectFromNextMonth).then(console.log);
+fetchData().then(saveData).then(getObjectFromNextMonth).then(console.log);
+fetchData().then(saveData).then(getObjectFromNextMonth).then(console.log);
+fetchData().then(saveData).then(getObjectFromNextMonth).then(console.log);
+fetchData().then(saveData).then(getObjectFromNextMonth).then(console.log);
+fetchData().then(saveData).then(getObjectFromNextMonth).then(console.log);
+fetchData().then(saveData).then(getObjectFromNextMonth).then(console.log);
+fetchData().then(saveData).then(getObjectFromNextMonth).then(console.log);
+fetchData().then(saveData).then(getObjectFromPreviousMonth).then(console.log);
+fetchData().then(saveData).then(getObjectFromPreviousMonth).then(console.log);
